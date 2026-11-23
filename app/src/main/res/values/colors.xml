@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 사이트의 라이트 테마 색과 맞춘다 -->
+    <color name="app_bg">#F4F6F9</color>
+    <color name="app_text">#141A24</color>
+    <color name="app_text_2">#5A6474</color>
+    <color name="app_accent">#3257D6</color>
+</resources>

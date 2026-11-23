@@ -1,0 +1,81 @@
+plugins {
+    id 'com.android.application'
+}
+
+// ---------------------------------------------------------------------------
+// 서명 키
+// 빌드할 때마다 서명이 바뀌면 폰에 깔린 앱 위에 새 버전을 덮어 설치할 수 없다.
+// 그래서 저장소에 들어 있는 고정 키(keystore/app-signing.p12)로 항상 서명한다.
+// 키를 읽지 못하면 빌드를 멈추지 않고 임시 디버그 키로 대신 서명한다.
+// ---------------------------------------------------------------------------
+def signingStore = rootProject.file('keystore/app-signing.p12')
+def signingPassword = 'nana-stock-app'
+def signingAlias = null
+if (signingStore.exists()) {
+    try {
+        def ks = java.security.KeyStore.getInstance('PKCS12')
+        signingStore.withInputStream { ks.load(it, signingPassword.toCharArray()) }
+        def protection = new java.security.KeyStore.PasswordProtection(signingPassword.toCharArray())
+        signingAlias = Collections.list(ks.aliases()).find { alias ->
+            ks.isKeyEntry(alias) && ks.getEntry(alias, protection) instanceof java.security.KeyStore.PrivateKeyEntry
+        }
+    } catch (Exception e) {
+        logger.warn("[signing] 고정 키를 읽지 못했습니다: ${e}")
+    }
+}
+def signingName = signingAlias != null ? 'fixed' : 'debug'
+if (signingAlias != null) {
+    logger.lifecycle("[signing] 고정 키로 서명합니다 (keystore/app-signing.p12)")
+} else {
+    logger.warn("[signing] 고정 키가 없어 임시 디버그 키로 서명합니다. 이전 버전 위에 덮어 설치되지 않을 수 있습니다.")
+}
+
+android {
+    namespace = 'io.github.steadystroke.stock'
+    compileSdk = 35
+
+    defaultConfig {
+        applicationId = 'io.github.steadystroke.stock'
+        minSdk = 26
+        targetSdk = 35
+        // GitHub Actions 가 실행 번호를 넘겨 준다. (새 빌드가 항상 더 높은 버전이 되도록)
+        versionCode = Integer.parseInt((project.findProperty('appVersionCode') ?: '1').toString())
+        versionName = (project.findProperty('appVersionName') ?: '1.0').toString()
+    }
+
+    signingConfigs {
+        if (signingAlias != null) {
+            create('fixed') {
+                storeFile = signingStore
+                storeType = 'pkcs12'
+                storePassword = signingPassword
+                keyAlias = signingAlias
+                keyPassword = signingPassword
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled = false
+            signingConfig = signingConfigs.getByName(signingName)
+        }
+        debug {
+            signingConfig = signingConfigs.getByName(signingName)
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    lint {
+        checkReleaseBuilds = false
+        abortOnError = false
+    }
+}
+
+// 외부 라이브러리 없이 안드로이드 기본 API(WebView)만 사용한다.
+dependencies {
+}

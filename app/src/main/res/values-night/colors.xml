@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 사이트의 다크 테마 색과 맞춘다 -->
+    <color name="app_bg">#0C0F14</color>
+    <color name="app_text">#EEF1F6</color>
+    <color name="app_text_2">#A3ADBC</color>
+    <color name="app_accent">#7F9CFF</color>
+</resources>

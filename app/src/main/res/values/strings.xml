@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">나나컴퍼니</string>
+
+    <string name="error_title">페이지를 불러오지 못했습니다</string>
+    <string name="error_message">인터넷 연결을 확인한 뒤 다시 시도해 주세요.</string>
+    <string name="retry">다시 시도</string>
+
+    <string name="login_title">Google 로그인 안내</string>
+    <string name="login_message">Google 정책상 앱 안의 웹뷰에서는 Google 계정 로그인이 차단됩니다.\n\n로그인(드라이브 저장)이 필요하면 브라우저에서 사이트를 열어 이용해 주세요. 로그인하지 않아도 검색 기록과 포트폴리오는 이 앱 안에 저장됩니다.</string>
+    <string name="open_in_browser">브라우저에서 열기</string>
+    <string name="close">닫기</string>
+
+    <string name="cannot_open_link">이 링크를 열 수 있는 앱이 없습니다.</string>
+</resources>
